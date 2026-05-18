@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
     }
 
     const orderOption =
-      orderBy === "recent" ? { createdAt: -1 } : { createdAt: -1 };
+      orderBy === "recent" ? { createdAt: -1 } : { createdAt: 1 };
 
     const offset = (Number(page) - 1) * Number(pageSize);
     const totalCount = await Product.countDocuments(where);
@@ -36,7 +36,8 @@ router.get("/", async (req, res) => {
 // 상품 등록
 router.post("/", async (req, res) => {
   try {
-    const product = new Product(req.body);
+    const { name, description, price, tags } = req.body;
+    const product = new Product({ name, description, price, tags });
     await product.save();
     res.status(201).json(product);
   } catch (err) {
@@ -62,9 +63,12 @@ router.get("/:id", async (req, res) => {
 // 상품 수정
 router.patch("/:id", async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const { name, description, price, tags } = req.body;
+    const product = await Product.findByInANdUpdate(
+      req.params.id,
+      { name, description, price, tags },
+      { new: true, runValidators: true },
+    );
     if (!product) {
       return res.status(404).json({ message: "상품을 찾을 수 없습니다." });
     }

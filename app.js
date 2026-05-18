@@ -8,15 +8,23 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+  }),
+);
 app.use(express.json());
 app.use("/products", productsRouter);
 
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => console.log("MongoDB 연결 성공"))
-  .catch((err) => console.error("MongoDB 연결 실패", err));
-
-app.listen(process.env.PORT || 3000, () => {
-  console.log("서버 시작! http://localhost:3000");
-});
+  .then(() => {
+    console.log("MongoDB 연결 성공");
+    app.listen(process.env.PORT || 3000, () => {
+      console.log("서버 시작! http://localhost:3000");
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB 연결 실패", err?.message ?? "알 수 없는 오류");
+    process.exit(1);
+  });

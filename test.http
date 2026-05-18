@@ -89,3 +89,19 @@ GET http://localhost:3000/products?page=1&pageSize=10&orderBy=recent
 
 ### 상품 상세 조회 테스트 2
 GET http://localhost:3000/products/6a004cee72795dde20e40ac2
+
+
+### 상품 추가 테스트
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{
+  "name": "테스트 상품입니다.",
+  "description": "테스트 설명입니다.",
+  "price": 10000,
+  "tags": ["테스트"]
+}
+
+
+### 상품 상세 조회
+GET http://localhost:3000/products/6a0a6d3a3ada29d98c854728
